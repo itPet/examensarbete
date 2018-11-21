@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>58259008352-pc373831ckoq69or533gnprj0ebmhtqh.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.58259008352-pc373831ckoq69or533gnprj0ebmhtqh</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBuu55vhPRXsZGrmlhaBhFhZVLrT9YVFiU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>58259008352</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.peterkarlsson.examensarbete</string>
+	<key>PROJECT_ID</key>
+	<string>examensarbete-71a9d</string>
+	<key>STORAGE_BUCKET</key>
+	<string>examensarbete-71a9d.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:58259008352:ios:acd5779530ade843</string>
+	<key>DATABASE_URL</key>
+	<string>https://examensarbete-71a9d.firebaseio.com</string>
+</dict>
+</plist>

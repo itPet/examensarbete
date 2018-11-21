@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>score</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+
+    <ion-list-header>
+      <ion-label></ion-label>
+      <ion-label>Poäng</ion-label>
+    </ion-list-header>
+
+    <ion-item lines="full" *ngFor="let player of players">
+      <ion-icon name="body" slot="start"></ion-icon>
+      <ion-label slot="start">
+        <h1>{{player.name}}</h1>
+        <ion-text color="success" *ngIf="player.ready">
+          <p>Redo</p>
+        </ion-text>
+        <ion-text color="danger" *ngIf="!player.ready">
+          <p>Inte redo</p>
+        </ion-text>
+      </ion-label>
+      <ion-text slot="end">{{player.score}}</ion-text>
+    </ion-item>
+    
+  </ion-list>
+  <ion-button (click)="readyToPlay()">
+    Ready to play
+  </ion-button>
+</ion-content>

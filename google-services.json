@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "58259008352",
+    "firebase_url": "https://examensarbete-71a9d.firebaseio.com",
+    "project_id": "examensarbete-71a9d",
+    "storage_bucket": "examensarbete-71a9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58259008352:android:acd5779530ade843",
+        "android_client_info": {
+          "package_name": "com.peterkarlsson.examensarbete"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58259008352-1od075p3t25dosgs377vjoac4u0d6v33.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYw63pIH3PHbRoTXwN-XrlkA4K9mzYZXU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

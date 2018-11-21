@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="login">
+  <div *ngIf="!storedName">
+    <ion-item>
+      <ion-label position="floating">Ditt namn</ion-label>
+      <ion-input autofocus="true" (ionChange)="nameTyped($event)" [(ngModel)]="playerName"></ion-input>
+    </ion-item>
+    <br>
+    <br>
+    <ion-button expand="block"
+    type="submit"
+    [disabled]="buttonDisabled"
+    (click)="storePlayerName()">Fortsätt</ion-button>
+  </div>
+
+  <ion-button *ngIf="storedName" expand="block" (click)="createGame()">Skapa spel</ion-button>
+  <br>
+  <br>
+  <br>
+  <ion-button *ngIf="storedName" expand="block" (click)="joinGame()">Gå med i spel</ion-button>
+
+</ion-content>
