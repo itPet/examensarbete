@@ -16,6 +16,7 @@ export class ScorePage implements OnInit {
   constructor(private server: ServerService, private router: Router) { }
 
   ngOnInit() {
+    console.log('score ngOnInit()');
     this.server.getPlayerList().subscribe(res => {
       let allReady = true;
       this.players = res;
@@ -31,6 +32,7 @@ export class ScorePage implements OnInit {
   }
 
   readyToPlay() {
+    console.log('ready to play');
     this.server.setReadyStatus(true);
   }
 

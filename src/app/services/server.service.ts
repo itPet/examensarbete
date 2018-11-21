@@ -3,7 +3,6 @@ import { AngularFirestore,
   AngularFirestoreDocument,
   AngularFirestoreCollection } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { Storage } from '@ionic/storage';
 
 export interface Player {
   name: string;
@@ -25,17 +24,10 @@ export class ServerService {
 
   private gameName: string;
 
-  constructor(private fireDatabase: AngularFirestore, private storage: Storage) {
-    this.storage.get('name').then(res => {
-      if (res != null) {
-        this.playerName = res;
-      }
-    });
-  }
+  constructor(private fireDatabase: AngularFirestore) { }
 
-  storePlayerName(name: string) {
+  setPlayerName(name: string) {
     this.playerName = name;
-    this.storage.set('name', name);
   }
 
   getPlayerName() {

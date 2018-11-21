@@ -1,8 +1,8 @@
-import { ServerService, Player } from './../services/server.service';
+import { Storage } from '@ionic/storage';
+import { ServerService } from './../services/server.service';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { exists } from 'fs';
 
 @Component({
   selector: 'app-login',
@@ -15,20 +15,24 @@ export class LoginPage implements OnInit {
   buttonDisabled = true;
   storedName: boolean;
   loader: any;
-  players: any;
-
 
   constructor(private router: Router,
     private server: ServerService,
     private alertCtrl: AlertController,
-    private loadingCtrl: LoadingController) { }
+    private loadingCtrl: LoadingController,
+    private storage: Storage,
+    private ngZone: NgZone) { }
 
   ngOnInit() {
-    if (this.server.getPlayerName() === '') {
-      this.storedName = false;
-    } else {
-      this.storedName = true;
-    }
+    this.storage.get('name').then(res => {
+      if (res != null) {
+        this.playerName = res;
+        this.storedName = true;
+        this.server.setPlayerName(res);
+      } else {
+        this.storedName = false;
+      }
+    });
   }
 
   nameTyped(name) {
@@ -41,8 +45,8 @@ export class LoginPage implements OnInit {
   }
 
   storePlayerName() {
-    this.server.storePlayerName(this.playerName);
-    this.storedName = true;
+    this.storage.set('name', this.playerName);
+    this.server.setPlayerName(this.playerName);
   }
 
   createGame() {
@@ -74,12 +78,16 @@ export class LoginPage implements OnInit {
             if (gameNameMsg === 'valid') {
               if (creator) {
                 this.server.joinGame(inputs.gameName, true);
-                this.router.navigateByUrl('/score');
+                this.ngZone.run(() => {
+                  this.router.navigateByUrl('/createGame');
+                });
               } else {
                 const playerNameMsg = await this.validatePlayerName(this.playerName, inputs.gameName);
                 if (playerNameMsg === 'valid') {
                   this.server.joinGame(inputs.gameName, false);
-                  this.router.navigateByUrl('/score');
+                  this.ngZone.run(() => {
+                    this.router.navigateByUrl('/score');
+                  });
                 } else {
                   this.changeNameAlert('Byt namn!', playerNameMsg, inputs.gameName);
                 }
@@ -120,9 +128,12 @@ export class LoginPage implements OnInit {
           handler: async (inputs) => {
             const playerNameMsg = await this.validatePlayerName(inputs.playerName, gameName);
             if (playerNameMsg === 'valid') {
-              this.server.storePlayerName(inputs.playerName);
+              this.server.setPlayerName(inputs.playerName);
+              this.storage.set('name', inputs.playerName);
               this.server.joinGame(gameName, false);
-              this.router.navigateByUrl('/score');
+              this.ngZone.run(() => {
+                this.router.navigateByUrl('/score');
+              });
             } else {
               this.changeNameAlert(header, playerNameMsg, gameName);
             }
