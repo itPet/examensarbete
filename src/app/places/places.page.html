@@ -1,0 +1,23 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title>Platser</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content padding>
+    <h1>Spelet har börjat!</h1>
+  
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" *ngFor="let place of places">
+          <ion-card (click)="toDetailPage(place.name)">
+            <ion-img [src]="place.imgUrl"></ion-img>
+            <ion-card-content>
+              {{place.name}}
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+  

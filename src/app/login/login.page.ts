@@ -45,6 +45,7 @@ export class LoginPage implements OnInit {
   }
 
   storePlayerName() {
+    this.storedName = true;
     this.storage.set('name', this.playerName);
     this.server.setPlayerName(this.playerName);
   }
@@ -55,6 +56,10 @@ export class LoginPage implements OnInit {
 
   joinGame() {
     this.createAndJoinAlert('Gå med i ett spel!', 'Ange spelets namn!', false);
+  }
+
+  changeName() {
+    this.storedName = false;
   }
 
   async createAndJoinAlert(header: string, message: string, creator: boolean) {
@@ -175,11 +180,16 @@ export class LoginPage implements OnInit {
       rootCollection.forEach(doc => {
         if (gameName === doc.id) {
           validName = !gameCreator;
+          if (!gameCreator && doc.data().started) {
+            validName = null;
+          }
         }
       });
       this.loader.dismiss();
       if (validName) {
         return 'valid';
+      } else if (validName === null) {
+        return '"' + gameName + '" har redan börjat utan dig. Välj ett annat spelnamn!';
       } else {
         if (gameCreator) {
           return '"' + gameName + '" finns redan. Välj ett annat spelnamn!';

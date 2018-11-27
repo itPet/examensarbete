@@ -5,7 +5,10 @@
 </ion-header>
 
 <ion-content padding class="login">
-  <h1>Välkommen {{playerName}}</h1>
+  <h1 *ngIf="storedName">
+    Välkommen {{playerName}}
+    <ion-button (click)="changeName()" slot="end">Byt namn</ion-button>
+  </h1>
   <div *ngIf="!storedName">
     <ion-item>
       <ion-label position="floating">Ditt namn</ion-label>

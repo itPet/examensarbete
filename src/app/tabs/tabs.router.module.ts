@@ -2,9 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { TabsPage } from './tabs.page';
-import { HomePage } from '../home/home.page';
-import { AboutPage } from '../about/about.page';
-import { ContactPage } from '../contact/contact.page';
+import { PlacesPage } from './../places/places.page';
+import { MissionsPage } from './../missions/missions.page';
 
 const routes: Routes = [
   {
@@ -13,29 +12,24 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/game-play/tabs/(home:home)',
+        redirectTo: '/game-play/tabs/(places:places)',
         pathMatch: 'full',
       },
       {
-        path: 'home',
-        outlet: 'home',
-        component: HomePage
+        path: 'places',
+        outlet: 'places',
+        component: PlacesPage
       },
       {
-        path: 'about',
-        outlet: 'about',
-        component: AboutPage
-      },
-      {
-        path: 'contact',
-        outlet: 'contact',
-        component: ContactPage
+        path: 'missions',
+        outlet: 'missions',
+        component: MissionsPage
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/game-play/tabs/(home:home)',
+    redirectTo: '/game-play/tabs/(places:places)',
     pathMatch: 'full'
   }
 ];

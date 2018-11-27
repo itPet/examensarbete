@@ -1,5 +1,4 @@
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
 import { ServerService, Player } from './../services/server.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -16,7 +15,6 @@ export class ScorePage implements OnInit {
   constructor(private server: ServerService, private router: Router) { }
 
   ngOnInit() {
-    console.log('score ngOnInit()');
     this.server.getPlayerList().subscribe(res => {
       let allReady = true;
       this.players = res;
@@ -26,13 +24,12 @@ export class ScorePage implements OnInit {
         }
       });
       if (allReady) {
-        this.router.navigateByUrl('/game-play/tabs/(home:home)');
+        this.router.navigateByUrl('/game-play/tabs/(places:places)');
       }
     });
   }
 
   readyToPlay() {
-    console.log('ready to play');
     this.server.setReadyStatus(true);
   }
 

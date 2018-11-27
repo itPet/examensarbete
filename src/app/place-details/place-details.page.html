@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>placeDetails</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/game-play/tabs/(places:places)"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-img [src]="place.imgUrl"></ion-img>
+    <ion-card-content>
+      {{place.name}}
+      <br>
+      {{place.info}}
+    </ion-card-content>
+  </ion-card>
+</ion-content>
