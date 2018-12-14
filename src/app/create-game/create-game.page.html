@@ -7,7 +7,7 @@
 <ion-content padding>
   <ion-item *ngFor="let placeGroup of placeGroups">
     <ion-label>{{placeGroup.name}}</ion-label>
-    <ion-checkbox [(ngModel)]="placeGroup.isChecked"></ion-checkbox>
+    <ion-checkbox [(ngModel)]="placeGroup.playWithGroup"></ion-checkbox>
   </ion-item>
 
   <ion-button (click)="continueBtnClicked()">Fortsätt</ion-button>

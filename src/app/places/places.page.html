@@ -5,15 +5,19 @@
   </ion-header>
   
   <ion-content padding>
-    <h1>Spelet har börjat!</h1>
+    <h2 *ngIf="player.role !== 'lost'">Du är {{player.role}}</h2>
+    <h2 *ngIf="player.role === 'lost'">Du är vilse och vet inte var du är!</h2>
   
     <ion-grid>
       <ion-row>
-        <ion-col size="6" *ngFor="let place of places">
-          <ion-card (click)="toDetailPage(place.name)">
-            <ion-img [src]="place.imgUrl"></ion-img>
-            <ion-card-content>
-              {{place.name}}
+        <ion-col size="6" *ngFor="let pl of places">
+          <ion-card (click)="toDetailPage(pl.name)">
+            <ion-img [src]="pl.imgUrl"></ion-img>
+            <ion-card-content color="green">
+              <p *ngIf="player.role === 'lost' || pl.name !== chosenPlace.name">{{pl.name}}</p>
+              <ion-text color="success">
+                <h3 *ngIf="pl.name === chosenPlace.name && player.role !== 'lost'">Du är här: {{pl.name}}</h3>
+              </ion-text>
             </ion-card-content>
           </ion-card>
         </ion-col>

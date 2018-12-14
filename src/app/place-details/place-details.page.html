@@ -2,18 +2,32 @@
   <ion-toolbar>
     <ion-title>placeDetails</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/game-play/tabs/(places:places)"></ion-back-button>
+      <ion-button href="/game-play/tabs/(places:places)">
+        <ion-icon name="arrow-back"></ion-icon>
+        Platser
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <h2 padding *ngIf="iAmHere">Du är {{player.role}} på den här platsen</h2>
   <ion-card>
     <ion-img [src]="place.imgUrl"></ion-img>
+    <ion-button *ngIf="player.role === 'lost'" expand="block">Gissa på den här platsen</ion-button>
     <ion-card-content>
-      {{place.name}}
+      <h1><b>{{place.name}}</b></h1>
       <br>
-      {{place.info}}
+      <h2>Roller på platsen</h2>
+      <p><b>En person är:</b> vilse</p>
+      <p><b>En person är:</b> {{place.uniqueRole}}</p>
+      <p><b>Resten är:</b> {{place.generalRole}}</p>
+      <br>
+      <h2>Bibelcitat</h2>
+      <p>{{place.bible}}</p>
+      <br>
+      <h2>Andra författare</h2>
+      <p>{{place.authors}}</p>
     </ion-card-content>
   </ion-card>
 </ion-content>

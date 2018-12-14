@@ -3,12 +3,15 @@ import { Injectable } from '@angular/core';
 export interface Place {
   name: string;
   imgUrl: string;
-  info: string;
+  uniqueRole: string;
+  generalRole: string;
+  bible: string;
+  authors: string;
 }
 
 export interface PlaceGroup {
   name: string;
-  isChecked: boolean;
+  playWithGroup: boolean;
   places: Place[];
 }
 
@@ -17,32 +20,58 @@ export interface PlaceGroup {
 })
 export class PlacesService {
 
-  private places1: PlaceGroup = {name: 'NT', isChecked: false, places: [
-    {name: 'Snickarverkstaden', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Lejongropen', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Sinai berg', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Betesda', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Fiskebåten', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Sjön', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Borgen', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
+  private places1: PlaceGroup = {name: 'NT', playWithGroup: false, places: [
+    {name: 'Brinnande ugnen', imgUrl: '../../assets/placesImages/FieryFurnace.jpg',
+    uniqueRole: 'Nebukadnessar', generalRole: 'En av de tre vännerna',
+    bible: `Daniel 3:1-27 - Kung Nebukadnessar lät göra en staty av guld... [Han] kallade samman... alla...
+     makthavare i provinserna... När ni hör ljudet av.. alla slags instrument, ska ni falla ner och tillbe
+    den gyllene statyn... [Nebukadnessar] "Är det sant att ni Shadrak, Meshak och Abed-Nego, inte... tillber
+    den gyllene statyn[?]... Om ni inte tillber ska ni i samma stund kastas i den brinnande ugnen, och vilken
+    gud kan då rädda er ur mina händer?" [De tre vännerna] "Om det blir så, är vår Gud... mäktig att rädda oss...
+    Men om inte, så ska du veta, o konung, att vi ändå inte... tillber guldstatyn..." Då fylldes Nebukadnessar
+    av vrede... så att hans ansiktsuttryck förvandlades. Han befallde att man skulle göra ugnen sju gånger hetare...
+    Så bands de... och kastades i den brinnande ugnen... Då blev kun Nebukadnessar förskräckt. Han
+    reste sig hastigt och frågade sina rådsherrar: "Var det inte tre män vi band och kastade i elden?...
+    Men nu ser jag fyra män gå lösa och lediga inne i elde, helt oskadda. Och den fjärde ser ut som en gudason."...
+    Man kunde inte ens känna att de luktade bränt.`,
+    authors: `PK 509 From his royal seat the king looked on, expecting to see the
+    men who had defied him utterly destroyed. But his feelings of triumph suddenly changed. The nobles standing
+    near saw his face grow pale as he started from the throne and looked intently into the glowing flames. `},
+    {name: 'Brinnande ', imgUrl: '../../assets/placesImages/Ephesus.jpg',
+    uniqueRole: 'Nebukadnessar', generalRole: 'En av de tre vännerna',
+    bible: `Daniel 3:1-27 - Kung Nebukadnessar lät göra en staty av guld... [Han] kallade samman... alla...
+     makthavare i provinserna... När ni hör ljudet av.. alla slags instrument, ska ni falla ner och tillbe
+    den gyllene statyn... [Nebukadnessar] "Är det sant att ni Shadrak, Meshak och Abed-Nego, inte... tillber
+    den gyllene statyn[?]... Om ni inte tillber ska ni i samma stund kastas i den brinnande ugnen, och vilken
+    gud kan då rädda er ur mina händer?" [De tre vännerna] "Om det blir så, är vår Gud... mäktig att rädda oss...
+    Men om inte, så ska du veta, o konung, att vi ändå inte... tillber guldstatyn..." Då fylldes Nebukadnessar
+    av vrede... så att hans ansiktsuttryck förvandlades. Han befallde att man skulle göra ugnen sju gånger hetare...
+    Så bands de... och kastades i den brinnande ugnen... Då blev kun Nebukadnessar förskräckt. Han
+    reste sig hastigt och frågade sina rådsherrar: "Var det inte tre män vi band och kastade i elden?...
+    Men nu ser jag fyra män gå lösa och lediga inne i elde, helt oskadda. Och den fjärde ser ut som en gudason."...
+    Man kunde inte ens känna att de luktade bränt.`,
+    authors: `PK 509 From his royal seat the king looked on, expecting to see the
+    men who had defied him utterly destroyed. But his feelings of triumph suddenly changed. The nobles standing
+    near saw his face grow pale as he started from the throne and looked intently into the glowing flames. `},
+    {name: ' ugnen', imgUrl: '../../assets/placesImages/Ephesus.jpg',
+    uniqueRole: 'Nebukadnessar', generalRole: 'En av de tre vännerna',
+    bible: `Daniel 3:1-27 - Kung Nebukadnessar lät göra en staty av guld... [Han] kallade samman... alla...
+     makthavare i provinserna... När ni hör ljudet av.. alla slags instrument, ska ni falla ner och tillbe
+    den gyllene statyn... [Nebukadnessar] "Är det sant att ni Shadrak, Meshak och Abed-Nego, inte... tillber
+    den gyllene statyn[?]... Om ni inte tillber ska ni i samma stund kastas i den brinnande ugnen, och vilken
+    gud kan då rädda er ur mina händer?" [De tre vännerna] "Om det blir så, är vår Gud... mäktig att rädda oss...
+    Men om inte, så ska du veta, o konung, att vi ändå inte... tillber guldstatyn..." Då fylldes Nebukadnessar
+    av vrede... så att hans ansiktsuttryck förvandlades. Han befallde att man skulle göra ugnen sju gånger hetare...
+    Så bands de... och kastades i den brinnande ugnen... Då blev kun Nebukadnessar förskräckt. Han
+    reste sig hastigt och frågade sina rådsherrar: "Var det inte tre män vi band och kastade i elden?...
+    Men nu ser jag fyra män gå lösa och lediga inne i elde, helt oskadda. Och den fjärde ser ut som en gudason."...
+    Man kunde inte ens känna att de luktade bränt.`,
+    authors: `PK 509 From his royal seat the king looked on, expecting to see the
+    men who had defied him utterly destroyed. But his feelings of triumph suddenly changed. The nobles standing
+    near saw his face grow pale as he started from the throne and looked intently into the glowing flames. `}
   ]};
-  private places2: PlaceGroup = this.places2 = {name: 'Other', isChecked: false, places: [
-    {name: 'Hage', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Gården', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Berg', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Bergspredikan', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Slätten', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Åsnedalen', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-  ]};
-  private places3: PlaceGroup = this.places3 = {name: 'GT', isChecked: false, places: [
-    {name: 'Lägret', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Israel', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Dammen', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Segelbåten', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Hoppet', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-    {name: 'Getsemane', imgUrl: '../../assets/placesImages/Ephesus.jpg', info: 'bra'},
-  ]};
-  private placeGroups: PlaceGroup[] = [this.places1, this.places2, this.places3];
+
+  private placeGroups: PlaceGroup[] = [this.places1];
 
   getPlaceGroups() {
       return this.placeGroups;

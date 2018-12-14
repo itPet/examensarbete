@@ -10,7 +10,7 @@ import { PlacesService, PlaceGroup } from '../services/places.service';
 })
 export class CreateGamePage implements OnInit {
 
-  private placeGroups: PlaceGroup[];
+  placeGroups: PlaceGroup[];
 
   constructor(private router: Router,
     private places: PlacesService,
@@ -21,7 +21,6 @@ export class CreateGamePage implements OnInit {
   }
 
   continueBtnClicked() {
-    this.server.setGameStartedStatus(true);
     this.server.setPlaceGroupNames(this.getPlaceGroupNames());
     this.router.navigateByUrl('/score');
   }
@@ -29,7 +28,7 @@ export class CreateGamePage implements OnInit {
   getPlaceGroupNames(): string[] {
     const groupNames: string[] = [];
     this.placeGroups.forEach(group => {
-      if (group.isChecked) {
+      if (group.playWithGroup) {
         groupNames.push(group.name);
       }
     });

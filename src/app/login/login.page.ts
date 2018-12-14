@@ -23,7 +23,7 @@ export class LoginPage implements OnInit {
     private storage: Storage,
     private ngZone: NgZone) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.storage.get('name').then(res => {
       if (res != null) {
         this.playerName = res;
@@ -154,7 +154,7 @@ export class LoginPage implements OnInit {
       return '"' + playerName + '" är för kort. Ditt namn måste vara minst 3 bokstäver. Försök igen!';
     } else {
       this.loader = await this.presentLoader();
-      const playersCollection = await this.server.getPlayers(gameName).toPromise();
+      const playersCollection = await this.server.getPlayersCollection(gameName).toPromise();
       let validName = true;
       playersCollection.forEach(doc => {
         if (doc.id === playerName) {
@@ -175,7 +175,7 @@ export class LoginPage implements OnInit {
       return '"' + gameName + '" är för kort. Skriv ett spelnamn med minst 3 bokstäver!';
     } else {
       this.loader = await this.presentLoader();
-      const rootCollection = await this.server.getCreatedGames().toPromise();
+      const rootCollection = await this.server.getRootCollection().toPromise();
       let validName = gameCreator;
       rootCollection.forEach(doc => {
         if (gameName === doc.id) {

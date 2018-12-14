@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { Place, PlacesService } from './../services/places.service';
 import { Component, OnInit } from '@angular/core';
-import { ServerService } from '../services/server.service';
+import { ServerService, Player } from '../services/server.service';
 
 @Component({
   selector: 'app-places',
@@ -11,15 +11,21 @@ import { ServerService } from '../services/server.service';
 export class PlacesPage implements OnInit {
 
   places: Place[];
+  chosenPlace: Place;
+  player: Player;
 
   constructor(private server: ServerService,
     private placesService: PlacesService,
     private router: Router) { }
 
-  ngOnInit() {
-    this.server.getGame().subscribe(res => {
-      this.places = this.placesService.getPlaces(res.placeGroupNames);
-    });
+  async ngOnInit() {
+    const gameDoc = await this.server.getGameDoc().toPromise();
+    this.places = this.placesService.getPlaces(gameDoc.data().placeGroupNames);
+    this.chosenPlace = gameDoc.data().chosenPlace as Place;
+    console.log('chosenPlace: ' + this.chosenPlace.name);
+    const playerDoc = await this.server.getPlayerDoc().toPromise(); // get player
+    this.player = playerDoc.data() as Player;
+    console.log('player.name: ' + this.player.name + '  player.role: ' + this.player.role);
   }
 
   toDetailPage(name: string) {
