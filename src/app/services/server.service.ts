@@ -13,15 +13,14 @@ export interface Player {
   role: string;
   correctLostGuess: boolean;
   correctUniqueGuess: boolean;
+  chosenPlace: Place;
 }
 
 export interface Game {
   id: string;
   started: boolean;
   placeGroupNames: string[];
-  chosenPlace: Place;
   lostGuessed: boolean;
-  lostFound: boolean;
 }
 
 @Injectable({
@@ -81,8 +80,7 @@ export class ServerService {
     // create game document
     this.gameDoc = this.fireDatabase.doc<Game>('root/' + gameName);
     if (host) {
-      this.gameDoc.set({id : gameName, started : null, placeGroupNames : [],
-        chosenPlace: null, lostGuessed: null, lostFound : null});
+      this.gameDoc.set({id : gameName, started : null, placeGroupNames : [], lostGuessed: null});
     }
     this.game = this.gameDoc.valueChanges();
     // create players collection
@@ -90,7 +88,7 @@ export class ServerService {
     // create one player
     this.playerDoc = this.fireDatabase.doc<Player>('root/' + gameName + '/players/' + playerName);
     this.playerDoc.set({name : playerName, ready : false, score : 0, host : host,
-      role : null, correctLostGuess : null, correctUniqueGuess : null});
+      role : null, correctLostGuess : null, correctUniqueGuess : null, chosenPlace : null});
     // listen to changes in players. Use playersCollection so the Player interface can be used
     this.players = this.playersCollection.valueChanges();
     this.player = this.playerDoc.valueChanges();
@@ -116,12 +114,28 @@ export class ServerService {
     this.gameDoc.update({started : status});
   }
 
-  setChosenPlace(place: Place) {
-    this.gameDoc.update({chosenPlace : place});
-  }
-
   setLostGuessed(guessed: boolean) {
     this.gameDoc.update({lostGuessed : guessed});
+  }
+
+  setPlayerRole(role: string) {
+    this.playerDoc.update({role : role});
+  }
+
+  setPlayerScore(points: number) {
+    this.playerDoc.update({score : points});
+  }
+
+  setChosenPlaceWithNames(playerNames: string[], place: Place) {
+    playerNames.forEach(name => {
+      this.playersCollection.doc(name).update({chosenPlace : place});
+    });
+  }
+
+  setChosenPlaceWithPlayers(allPlayers: Player[], place: Place) {
+    allPlayers.forEach(p => {
+      this.playersCollection.doc(p.name).update({chosenPlace : place});
+    });
   }
 
   setPlayerRoles(allPlayers: Player[], uniquePlayer: string, lostPlayer: string) {

@@ -26,19 +26,16 @@ export class CreateGamePage implements OnInit {
   continueBtnClicked() {
     const chosenPlaceGroups: string[] = this.getPlaceGroupNames();
 
-    // randomize place
+    // set places
     const places: Place[] = this.plService.getPlaces(chosenPlaceGroups);
-    const chosenPlace = places[(Math.floor(Math.random() * places.length))];
 
     // store to server
     this.server.setPlaceGroupNames(chosenPlaceGroups);
-    this.server.setChosenPlace(chosenPlace);
+    this.server.setGameStartedStatus(false);
 
     // store to local data
     this.localData.setPlaces(places);
-    this.localData.setChosenPlace(chosenPlace);
 
-    this.server.setGameStartedStatus(false);
     this.router.navigateByUrl('/score');
   }
 

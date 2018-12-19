@@ -19,7 +19,6 @@ export class LoginPage implements OnInit {
   storedName: boolean;
   loader: any;
   places: Place[];
-  chosenPlace: Place;
 
   constructor(private router: Router,
     private server: ServerService,
@@ -98,7 +97,6 @@ export class LoginPage implements OnInit {
               } else {
                 const playerNameMsg = await this.validatePlayerName(this.playerName, inputs.gameName);
                 if (playerNameMsg === 'valid') {
-                  this.localData.setChosenPlace(this.chosenPlace);
                   this.localData.setPlaces(this.places);
                   this.server.joinGame(inputs.gameName, false, this.playerName);
                   this.ngZone.run(() => {
@@ -146,7 +144,6 @@ export class LoginPage implements OnInit {
             if (playerNameMsg === 'valid') {
               this.localData.setPlayerName(inputs.playerName);
               this.storage.set('name', inputs.playerName);
-              this.localData.setChosenPlace(this.chosenPlace);
               this.localData.setPlaces(this.places);
               this.server.joinGame(gameName, false, this.localData.getPlayerName());
               this.ngZone.run(() => {
@@ -198,7 +195,6 @@ export class LoginPage implements OnInit {
           } else if (!gameCreator && doc.data().started === false) {
             validName = true;
             this.places = this.placesService.getPlaces(doc.data().placeGroupNames);
-            this.chosenPlace = doc.data().chosenPlace;
           }
           if (!gameCreator && doc.data().started) {
             validName = null;

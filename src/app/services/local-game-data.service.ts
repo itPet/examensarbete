@@ -27,7 +27,18 @@ export class LocalGameDataService {
   constructor() { }
 
   resetData() {
-
+    this.chosenPlace = undefined;
+    this.playerRole = undefined;
+    this.lostGuess = undefined;
+    this.lostGuessed = undefined;
+    this.lostPlayerFound = undefined;
+    this.timeRanOut = undefined;
+    this.uniqueGuess = undefined;
+    this.placeGuess = undefined;
+    this.lostPlayer = undefined;
+    this.uniquePlayer = undefined;
+    this.correctUniqueGuesses = undefined;
+    this.correctLostGuesses = undefined;
   }
 
   getPoints() {

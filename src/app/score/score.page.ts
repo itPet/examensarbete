@@ -17,6 +17,9 @@ export class ScorePage implements OnInit {
   lostPlayer: string;
   navigate = true;
   assignRoles = true;
+  setChosenPlace = true;
+  playerRole: string = null;
+  chosenPlace: Place = null;
   subscription: Subscription;
 
   constructor(private server: ServerService,
@@ -24,9 +27,10 @@ export class ScorePage implements OnInit {
     private localData: LocalGameDataService) { }
 
   ngOnInit() {
+    console.log('ngOnInit score page');
     this.subscription = this.server.getPlayers().subscribe(res => {
+      console.log('inside subscription score page');
       let allReady = true;
-      let playerRole: string = null;
       this.players = res;
       this.players.forEach(player => {
         if (!player.ready) {
@@ -34,12 +38,15 @@ export class ScorePage implements OnInit {
         }
         if (player.name === this.localData.getPlayerName()) {
           if (player.role !== null) {
-            playerRole = player.role;
+            this.playerRole = player.role;
             this.localData.setPlayerRole(player.role);
+          }
+          if (player.chosenPlace !== null && this.playerRole === null) {
+            this.chosenPlace = player.chosenPlace;
+            this.localData.setChosenPlace(player.chosenPlace);
           }
         }
         if (player.role === 'lost') {
-          console.log('Lost player role set');
           this.localData.setLostPlayer(player.name);
         } else if (player.role === 'unique') {
           this.localData.setUniquePlayer(player.name);
@@ -52,6 +59,10 @@ export class ScorePage implements OnInit {
           playerNames.push(p.name);
         });
         this.localData.setPlayerNames(playerNames);
+        if (this.setChosenPlace && this.localData.isHost()) {
+          this.setChosenPlace = false;
+          this.randomizePlace();
+        }
       }
 
       if (allReady && this.assignRoles && this.localData.isHost()) {
@@ -66,11 +77,11 @@ export class ScorePage implements OnInit {
         this.navigate = true;
       }
 
-      if (playerRole !== null && playerRole === 'lost' && this.navigate) {
+      if (this.playerRole !== null && this.chosenPlace !== null && this.playerRole === 'lost' && this.navigate) {
         console.log('navigate as lost');
         this.navigate = false;
         this.router.navigateByUrl('/game-play/tabs/(places:places)');
-      } else if (playerRole !== null && this.navigate) {
+      } else if (this.playerRole !== null && this.chosenPlace !== null && this.navigate) {
         console.log('navigate as not lost');
         this.navigate = false;
         this.router.navigateByUrl('/game-play/tabs/(places:place-details/' + this.localData.getChosenPlace().name);
@@ -96,6 +107,12 @@ export class ScorePage implements OnInit {
     playerNums.splice(uniqueNum, 1);
     const lostNum = playerNums[(Math.floor(Math.random() * playerNums.length))];
     this.server.setPlayerRoles(this.players, this.players[uniqueNum].name, this.players[lostNum].name);
+  }
+
+  randomizePlace() {
+    const places = this.localData.getPlaces();
+    const chosenPlace = places[(Math.floor(Math.random() * places.length))];
+    this.server.setChosenPlaceWithNames(this.localData.getPlayerNames(), chosenPlace);
   }
 
 }

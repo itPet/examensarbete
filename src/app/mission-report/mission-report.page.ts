@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalGameDataService } from '../services/local-game-data.service';
-import { Place } from '../services/places.service';
+import { ServerService } from '../services/server.service';
 
 @Component({
   selector: 'app-mission-report',
@@ -23,12 +23,13 @@ export class MissionReportPage implements OnInit {
   missionTwoFoundBy: string;
   showMissionTwo = false;
 
-  constructor(private localData: LocalGameDataService) { }
+  constructor(private localData: LocalGameDataService,
+    private server: ServerService) { }
 
   ngOnInit() {
     this.playerRole = this.localData.getPlayerRole();
     this.uniqueGuess = this.localData.getUniqueGuess();
-    if (this.uniqueGuess = undefined) {
+    if (this.uniqueGuess === undefined) {
       this.uniqueGuess = 'Inget';
     }
     let points = 0;
@@ -99,7 +100,7 @@ export class MissionReportPage implements OnInit {
 
       this.missionTwo = 'Bli inte hittad av majoriteten!';
       this.missionTwoFoundBy = this.localData.getCorrectLostGuesses() + ' pers';
-      if (this.localData.getLostPlayerFound) {
+      if (this.localData.getLostPlayerFound()) {
         this.missionTwoIcon = 'close';
         this.missionTwoGuessCorrect = 'Dåligt';
         this.missionTwoPoints = '0 poäng';
@@ -124,10 +125,19 @@ export class MissionReportPage implements OnInit {
     }
 
     this.localData.addPoints(points);
+
+    this.resetServerData();
+    this.localData.resetData();
   }
 
-  resetData() {
-
+  resetServerData() {
+    this.server.setCorrectLostGuess(null);
+    this.server.setCorrectUniqueGuess(null);
+    this.server.setPlayerReadyStatus(false);
+    this.server.setPlayerRole(null);
+    this.server.setPlayerScore(this.localData.getPoints());
+    this.server.setLostGuessed(null);
+    this.server.setChosenPlaceWithNames(this.localData.getPlayerNames(), null);
   }
 
 }
