@@ -1,7 +1,7 @@
+import { LocalGameDataService } from './../services/local-game-data.service';
 import { ServerService } from './../services/server.service';
-import { PlacesService, Place } from './../services/places.service';
+import { Place } from './../services/places.service';
 import { Component, OnInit } from '@angular/core';
-import { Player } from '../services/server.service';
 
 @Component({
   selector: 'app-missions',
@@ -10,32 +10,40 @@ import { Player } from '../services/server.service';
 })
 export class MissionsPage implements OnInit {
 
-  players: Player[];
-  player: Player;
+  playerNames: string[];
+  playerName: string;
+  playerRole: string;
   chosenPlace: Place;
-  subscription;
+  lGuess: string = null;
+  uGuess: string = null;
 
-  constructor(private server: ServerService) { }
+  constructor(private localData: LocalGameDataService,
+    private server: ServerService) { }
 
   async ngOnInit() {
-    // const playersCollection = await this.server.getPlayersCollect().toPromise();
-    // playersCollection.forEach(plDoc => {
-    //   this.players.push(plDoc.data() as Player);
-    // });
-    this.subscription = this.server.getPlayers().subscribe(res => {
-      console.log('inside subscription');
-      this.players = res;
-    });
-
-    const playerDoc = await this.server.getPlayerDoc().toPromise(); // get player
-    this.player = playerDoc.data() as Player;
-    const gameDoc = await this.server.getGameDoc().toPromise();
-    this.chosenPlace = gameDoc.data().chosenPlace as Place;
-    console.log('players: ' + this.players);
+    this.playerNames = this.localData.getPlayerNames();
+    this.playerName = this.localData.getPlayerName();
+    this.playerRole = this.localData.getPlayerRole();
+    this.chosenPlace = this.localData.getChosenPlace();
   }
 
-  ionViewDidLeave() {
-    console.log('ionViewDidLeave() missions page');
-    this.subscription.unsubscribe();
+  lostGuess(name: string) {
+    if (name === null) {
+      this.server.setCorrectLostGuess(null);
+    } else {
+      this.server.setCorrectLostGuess((name === this.localData.getLostPlayer()));
+    }
+    this.lGuess = name;
+    this.localData.setLostGuess(name);
+  }
+
+  uniqueGuess(name: string) {
+    if (name === null) {
+      this.server.setCorrectUniqueGuess(null);
+    } else {
+      this.server.setCorrectUniqueGuess(name === this.localData.getUniquePlayer());
+    }
+    this.uGuess = name;
+    this.localData.setUniqueGuess(name);
   }
 }

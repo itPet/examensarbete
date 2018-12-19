@@ -11,10 +11,10 @@
 </ion-header>
 
 <ion-content>
-  <h2 padding *ngIf="iAmHere">Du är {{player.role}} på den här platsen</h2>
+  <h2 padding *ngIf="iAmHere">Du är {{roleSpelledOut}} på den här platsen</h2>
   <ion-card>
     <ion-img [src]="place.imgUrl"></ion-img>
-    <ion-button *ngIf="player.role === 'lost'" expand="block">Gissa på den här platsen</ion-button>
+    <ion-button *ngIf="playerRole === 'lost'" expand="block" (click)="guessedOnPlace(place.name)">Gissa på den här platsen</ion-button>
     <ion-card-content>
       <h1><b>{{place.name}}</b></h1>
       <br>

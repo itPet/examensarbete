@@ -1,7 +1,7 @@
+import { LocalGameDataService } from './../services/local-game-data.service';
 import { Router } from '@angular/router';
-import { Place, PlacesService } from './../services/places.service';
+import { Place} from './../services/places.service';
 import { Component, OnInit } from '@angular/core';
-import { ServerService, Player } from '../services/server.service';
 
 @Component({
   selector: 'app-places',
@@ -12,23 +12,18 @@ export class PlacesPage implements OnInit {
 
   places: Place[];
   chosenPlace: Place;
-  player: Player;
+  playerRole: string;
 
-  constructor(private server: ServerService,
-    private placesService: PlacesService,
+  constructor(private localData: LocalGameDataService,
     private router: Router) { }
 
   async ngOnInit() {
-    const gameDoc = await this.server.getGameDoc().toPromise();
-    this.places = this.placesService.getPlaces(gameDoc.data().placeGroupNames);
-    this.chosenPlace = gameDoc.data().chosenPlace as Place;
-    console.log('chosenPlace: ' + this.chosenPlace.name);
-    const playerDoc = await this.server.getPlayerDoc().toPromise(); // get player
-    this.player = playerDoc.data() as Player;
-    console.log('player.name: ' + this.player.name + '  player.role: ' + this.player.role);
+    this.chosenPlace = this.localData.getChosenPlace();
+    this.playerRole = this.localData.getPlayerRole();
+    this.places = this.localData.getPlaces();
   }
 
   toDetailPage(name: string) {
-    this.router.navigateByUrl('/place-details/' + name);
+    this.router.navigateByUrl('/game-play/tabs/(places:place-details/' + name);
   }
 }

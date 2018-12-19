@@ -8,6 +8,7 @@ import { TabsPageRoutingModule } from './tabs.router.module';
 import { TabsPage } from './tabs.page';
 import { PlacesPageModule } from '../places/places.module';
 import { MissionsPageModule } from './../missions/missions.module';
+import { PlaceDetailsPageModule } from './../place-details/place-details.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { MissionsPageModule } from './../missions/missions.module';
     FormsModule,
     TabsPageRoutingModule,
     MissionsPageModule,
-    PlacesPageModule
+    PlacesPageModule,
+    PlaceDetailsPageModule
   ],
   declarations: [TabsPage]
 })

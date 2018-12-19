@@ -1,8 +1,11 @@
+import { PlacesService } from './../services/places.service';
+import { LocalGameDataService } from './../services/local-game-data.service';
 import { Storage } from '@ionic/storage';
 import { ServerService } from './../services/server.service';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
+import { Place } from '../services/places.service';
 
 @Component({
   selector: 'app-login',
@@ -15,20 +18,24 @@ export class LoginPage implements OnInit {
   buttonDisabled = true;
   storedName: boolean;
   loader: any;
+  places: Place[];
+  chosenPlace: Place;
 
   constructor(private router: Router,
     private server: ServerService,
+    private placesService: PlacesService,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     private storage: Storage,
-    private ngZone: NgZone) { }
+    private ngZone: NgZone,
+    private localData: LocalGameDataService) { }
 
   async ngOnInit() {
-    this.storage.get('name').then(res => {
-      if (res != null) {
-        this.playerName = res;
+    this.storage.get('name').then(name => {
+      if (name != null) {
+        this.playerName = name;
         this.storedName = true;
-        this.server.setPlayerName(res);
+        this.localData.setPlayerName(name);
       } else {
         this.storedName = false;
       }
@@ -47,14 +54,16 @@ export class LoginPage implements OnInit {
   storePlayerName() {
     this.storedName = true;
     this.storage.set('name', this.playerName);
-    this.server.setPlayerName(this.playerName);
+    this.localData.setPlayerName(this.playerName);
   }
 
   createGame() {
+    this.localData.setIsHost(true);
     this.createAndJoinAlert('Skapa ett spel!', 'Ange spelets namn!', true);
   }
 
   joinGame() {
+    this.localData.setIsHost(false);
     this.createAndJoinAlert('Gå med i ett spel!', 'Ange spelets namn!', false);
   }
 
@@ -82,14 +91,16 @@ export class LoginPage implements OnInit {
             const gameNameMsg = await this.validateGameName(inputs.gameName, creator);
             if (gameNameMsg === 'valid') {
               if (creator) {
-                this.server.joinGame(inputs.gameName, true);
+                this.server.joinGame(inputs.gameName, true, this.playerName);
                 this.ngZone.run(() => {
                   this.router.navigateByUrl('/createGame');
                 });
               } else {
                 const playerNameMsg = await this.validatePlayerName(this.playerName, inputs.gameName);
                 if (playerNameMsg === 'valid') {
-                  this.server.joinGame(inputs.gameName, false);
+                  this.localData.setChosenPlace(this.chosenPlace);
+                  this.localData.setPlaces(this.places);
+                  this.server.joinGame(inputs.gameName, false, this.playerName);
                   this.ngZone.run(() => {
                     this.router.navigateByUrl('/score');
                   });
@@ -133,9 +144,11 @@ export class LoginPage implements OnInit {
           handler: async (inputs) => {
             const playerNameMsg = await this.validatePlayerName(inputs.playerName, gameName);
             if (playerNameMsg === 'valid') {
-              this.server.setPlayerName(inputs.playerName);
+              this.localData.setPlayerName(inputs.playerName);
               this.storage.set('name', inputs.playerName);
-              this.server.joinGame(gameName, false);
+              this.localData.setChosenPlace(this.chosenPlace);
+              this.localData.setPlaces(this.places);
+              this.server.joinGame(gameName, false, this.localData.getPlayerName());
               this.ngZone.run(() => {
                 this.router.navigateByUrl('/score');
               });
@@ -177,11 +190,22 @@ export class LoginPage implements OnInit {
       this.loader = await this.presentLoader();
       const rootCollection = await this.server.getRootCollection().toPromise();
       let validName = gameCreator;
+      let nullMsg = '';
       rootCollection.forEach(doc => {
         if (gameName === doc.id) {
-          validName = !gameCreator;
+          if (gameCreator) {
+            validName = false;
+          } else if (!gameCreator && doc.data().started === false) {
+            validName = true;
+            this.places = this.placesService.getPlaces(doc.data().placeGroupNames);
+            this.chosenPlace = doc.data().chosenPlace;
+          }
           if (!gameCreator && doc.data().started) {
             validName = null;
+            nullMsg = '"' + gameName + '" har redan börjat utan dig. Välj ett annat spelnamn!';
+          } else if (!gameCreator && doc.data().started === null) {
+            validName = null;
+            nullMsg = '"' + gameName + '" håller på att skapas. Vänligen försök gå med om en liten stund.';
           }
         }
       });
@@ -189,7 +213,7 @@ export class LoginPage implements OnInit {
       if (validName) {
         return 'valid';
       } else if (validName === null) {
-        return '"' + gameName + '" har redan börjat utan dig. Välj ett annat spelnamn!';
+        return nullMsg;
       } else {
         if (gameCreator) {
           return '"' + gameName + '" finns redan. Välj ett annat spelnamn!';

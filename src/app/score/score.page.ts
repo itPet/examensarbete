@@ -1,7 +1,9 @@
+import { LocalGameDataService } from './../services/local-game-data.service';
 import { PlacesService, Place } from './../services/places.service';
 import { Router } from '@angular/router';
 import { ServerService, Player } from './../services/server.service';
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -13,17 +15,16 @@ export class ScorePage implements OnInit {
 
   players: Player[];
   lostPlayer: string;
-  chosenPlace: Place;
   navigate = true;
   assignRoles = true;
-  subscription;
+  subscription: Subscription;
 
   constructor(private server: ServerService,
     private router: Router,
-    private plService: PlacesService) { }
+    private localData: LocalGameDataService) { }
 
   ngOnInit() {
-    this.subscription = this.server.getPlayers().subscribe(async res => {
+    this.subscription = this.server.getPlayers().subscribe(res => {
       let allReady = true;
       let playerRole: string = null;
       this.players = res;
@@ -31,19 +32,38 @@ export class ScorePage implements OnInit {
         if (!player.ready) {
           allReady = false;
         }
-        if (player.name === this.server.getPlayerName()) {
+        if (player.name === this.localData.getPlayerName()) {
           if (player.role !== null) {
             playerRole = player.role;
+            this.localData.setPlayerRole(player.role);
           }
+        }
+        if (player.role === 'lost') {
+          console.log('Lost player role set');
+          this.localData.setLostPlayer(player.name);
+        } else if (player.role === 'unique') {
+          this.localData.setUniquePlayer(player.name);
         }
       });
 
-      if (allReady && this.assignRoles && this.server.isHost()) {
-        console.log('allReady && assignRoles are true');
+      if (allReady) {
+        const playerNames: string[] = [];
+        this.players.forEach(p => {
+          playerNames.push(p.name);
+        });
+        this.localData.setPlayerNames(playerNames);
+      }
+
+      if (allReady && this.assignRoles && this.localData.isHost()) {
         this.assignRoles = false;
         this.server.setGameStartedStatus(true);
-        const gameDoc = await this.server.getGameDoc().toPromise();
-        await this.randomPlaceAndRoles(gameDoc.data().placeGroupNames);
+        this.randomizeRoles();
+      }
+
+      if (this.localData.getLostPlayer() === undefined || this.localData.getUniquePlayer() === undefined) {
+        this.navigate = false;
+      } else {
+        this.navigate = true;
       }
 
       if (playerRole !== null && playerRole === 'lost' && this.navigate) {
@@ -53,8 +73,7 @@ export class ScorePage implements OnInit {
       } else if (playerRole !== null && this.navigate) {
         console.log('navigate as not lost');
         this.navigate = false;
-        const gameDoc = await this.server.getGameDoc().toPromise();
-        this.router.navigateByUrl('/place-details/' + gameDoc.data().chosenPlace.name);
+        this.router.navigateByUrl('/game-play/tabs/(places:place-details/' + this.localData.getChosenPlace().name);
       }
     });
   }
@@ -68,27 +87,15 @@ export class ScorePage implements OnInit {
     this.server.setPlayerReadyStatus(true);
   }
 
-  randomPlaceAndRoles(placeGroupNames: string[]) {
-    // random place
-    const places: Place[] = this.plService.getPlaces(placeGroupNames);
-    console.log('places: ' + places);
-    this.chosenPlace = places[(Math.floor(Math.random() * places.length))];
-    console.log('chosenPlace: ' + this.chosenPlace);
-    this.server.setChosenPlace(this.chosenPlace);
-
-    // random roles
+  randomizeRoles() {
     const playerNums: number[] = [];
     for (let index = 0; index < this.players.length; index++) {
       playerNums.push(index);
     }
-    console.log('playerNums after forloop: ' + playerNums);
     const uniqueNum = playerNums[(Math.floor(Math.random() * playerNums.length))];
-    console.log('unique num: ' + uniqueNum);
     playerNums.splice(uniqueNum, 1);
-    console.log('playerNums after splice: ' + playerNums);
     const lostNum = playerNums[(Math.floor(Math.random() * playerNums.length))];
-    console.log('lostNum: ' + lostNum);
-    this.server.setPlayerRoles(this.players, this.players[uniqueNum].name, this.players[lostNum].name, this.chosenPlace);
+    this.server.setPlayerRoles(this.players, this.players[uniqueNum].name, this.players[lostNum].name);
   }
 
 }

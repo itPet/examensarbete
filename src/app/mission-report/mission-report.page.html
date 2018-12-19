@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Uppdragsrapport</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-item lines="none">
+          <ion-icon [name]=missionOneIcon size="large"></ion-icon>
+          {{missionOne}}
+        </ion-item>
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-text slot="start">Du gissade:</ion-text>
+        <ion-text slot="end">{{missionOneGuess}}</ion-text>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-text slot="start">Det var:</ion-text>
+        <ion-text slot="end">{{missionOneGuessCorrect}}</ion-text>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-text slot="start">Du fick:</ion-text>
+        <ion-text slot="end">{{missionOnePoints}}</ion-text>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="showMissionTwo">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-item lines="none">
+          <ion-icon [name]=missionTwoIcon size="large"></ion-icon>
+          {{missionTwo}}
+        </ion-item>
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-text slot="start">Hittad av:</ion-text>
+        <ion-text slot="end">{{missionTwoFoundBy}}</ion-text>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-text slot="start">Det var:</ion-text>
+        <ion-text slot="end">{{missionTwoGuessCorrect}}</ion-text>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-text slot="start">Du fick:</ion-text>
+        <ion-text slot="end">{{missionTwoPoints}}</ion-text>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="playerRole === 'general'">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-item lines="none">
+          <ion-icon [name]=missionTwoIcon size="large"></ion-icon>
+          {{missionTwo}}
+        </ion-item>
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-text slot="start">Du gissade:</ion-text>
+        <ion-text slot="end">{{uniqueGuess}}</ion-text>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-text slot="start">Det var:</ion-text>
+        <ion-text slot="end">{{missionTwoGuessCorrect}}</ion-text>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-text slot="start">Du fick:</ion-text>
+        <ion-text slot="end">{{missionTwoPoints}}</ion-text>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="block">Till poängtabell</ion-button>
+</ion-content>

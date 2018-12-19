@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 import { PlacesPage } from './../places/places.page';
 import { MissionsPage } from './../missions/missions.page';
+import { PlaceDetailsPage } from './../place-details/place-details.page';
 
 const routes: Routes = [
   {
@@ -18,12 +19,17 @@ const routes: Routes = [
       {
         path: 'places',
         outlet: 'places',
-        component: PlacesPage
+        component: PlacesPage,
       },
       {
         path: 'missions',
         outlet: 'missions',
         component: MissionsPage
+      },
+      {
+        path: 'place-details/:name',
+        outlet: 'places',
+        component: PlaceDetailsPage
       }
     ]
   },

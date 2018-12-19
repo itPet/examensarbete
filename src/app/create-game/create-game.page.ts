@@ -1,3 +1,5 @@
+import { LocalGameDataService } from './../services/local-game-data.service';
+import { Place } from './../services/places.service';
 import { ServerService } from './../services/server.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
@@ -13,15 +15,30 @@ export class CreateGamePage implements OnInit {
   placeGroups: PlaceGroup[];
 
   constructor(private router: Router,
-    private places: PlacesService,
-    private server: ServerService) { }
+    private plService: PlacesService,
+    private server: ServerService,
+    private localData: LocalGameDataService) { }
 
   ngOnInit() {
-    this.placeGroups = this.places.getPlaceGroups();
+    this.placeGroups = this.plService.getPlaceGroups();
   }
 
   continueBtnClicked() {
-    this.server.setPlaceGroupNames(this.getPlaceGroupNames());
+    const chosenPlaceGroups: string[] = this.getPlaceGroupNames();
+
+    // randomize place
+    const places: Place[] = this.plService.getPlaces(chosenPlaceGroups);
+    const chosenPlace = places[(Math.floor(Math.random() * places.length))];
+
+    // store to server
+    this.server.setPlaceGroupNames(chosenPlaceGroups);
+    this.server.setChosenPlace(chosenPlace);
+
+    // store to local data
+    this.localData.setPlaces(places);
+    this.localData.setChosenPlace(chosenPlace);
+
+    this.server.setGameStartedStatus(false);
     this.router.navigateByUrl('/score');
   }
 

@@ -11,6 +11,8 @@ export interface Player {
   score: number;
   host: boolean;
   role: string;
+  correctLostGuess: boolean;
+  correctUniqueGuess: boolean;
 }
 
 export interface Game {
@@ -18,7 +20,8 @@ export interface Game {
   started: boolean;
   placeGroupNames: string[];
   chosenPlace: Place;
-
+  lostGuessed: boolean;
+  lostFound: boolean;
 }
 
 @Injectable({
@@ -30,26 +33,14 @@ export class ServerService {
   private playerDoc: AngularFirestoreDocument<Player>;
   private gameDoc: AngularFirestoreDocument<Game>;
 
-  private rootCollection: AngularFirestoreCollection<Game>;
-  private root: Observable<Game[]>;
-
   private players: Observable<Player[]>;
   private player: Observable<Player>;
+  private game: Observable<Game>;
 
-  private playerName = ''; // not in firebase
-  private gameName: string; // not in firebase
-  private host: boolean; // not in firebase
+  // private playerName = ''; // not in firebase
+  // private gameName: string; // not in firebase
 
-  constructor(private fireDatabase: AngularFirestore) {
-  }
-
-  isHost() {
-    return this.host;
-  }
-
-  getPlayerName() {
-    return this.playerName;
-  }
+  constructor(private fireDatabase: AngularFirestore) { }
 
   getPlayer() {
     return this.player;
@@ -78,23 +69,28 @@ export class ServerService {
     return this.gameDoc.get(); // .get() enables to use .toPromise()
   }
 
+  getGame() {
+    return this.game;
+  }
+
   getRootCollection() {
     return this.fireDatabase.collection('root').get(); // .get() enables to use .toPromise()
   }
 
-  joinGame(gameName: string, host: boolean) {
-    this.gameName = gameName;
-    this.host = host;
+  joinGame(gameName: string, host: boolean, playerName: string) {
     // create game document
-    this.gameDoc = this.fireDatabase.doc('root/' + gameName);
+    this.gameDoc = this.fireDatabase.doc<Game>('root/' + gameName);
     if (host) {
-      this.gameDoc.set({id : gameName, started : false, placeGroupNames : [], chosenPlace: null});
+      this.gameDoc.set({id : gameName, started : null, placeGroupNames : [],
+        chosenPlace: null, lostGuessed: null, lostFound : null});
     }
+    this.game = this.gameDoc.valueChanges();
     // create players collection
-    this.playersCollection = this.fireDatabase.collection('root/' + this.gameName + '/players');
+    this.playersCollection = this.fireDatabase.collection<Player>('root/' + gameName + '/players');
     // create one player
-    this.playerDoc = this.fireDatabase.doc('root/' + this.gameName + '/players/' + this.playerName);
-    this.playerDoc.set({name : this.playerName, ready : false, score : 0, host : host, role : null});
+    this.playerDoc = this.fireDatabase.doc<Player>('root/' + gameName + '/players/' + playerName);
+    this.playerDoc.set({name : playerName, ready : false, score : 0, host : host,
+      role : null, correctLostGuess : null, correctUniqueGuess : null});
     // listen to changes in players. Use playersCollection so the Player interface can be used
     this.players = this.playersCollection.valueChanges();
     this.player = this.playerDoc.valueChanges();
@@ -102,6 +98,14 @@ export class ServerService {
 
   setPlayerReadyStatus(status: boolean) {
     this.playerDoc.update({ready : status});
+  }
+
+  setCorrectLostGuess(correct: boolean) {
+    this.playerDoc.update({correctLostGuess : correct});
+  }
+
+  setCorrectUniqueGuess(correct: boolean) {
+    this.playerDoc.update({correctUniqueGuess : correct});
   }
 
   setPlaceGroupNames(names: string[]) {
@@ -116,17 +120,17 @@ export class ServerService {
     this.gameDoc.update({chosenPlace : place});
   }
 
-  setPlayerName(name: string) {
-    this.playerName = name;
+  setLostGuessed(guessed: boolean) {
+    this.gameDoc.update({lostGuessed : guessed});
   }
 
-  setPlayerRoles(allPlayers: Player[], uniquePlayer: string, lostPlayer: string, place: Place) {
+  setPlayerRoles(allPlayers: Player[], uniquePlayer: string, lostPlayer: string) {
     allPlayers.forEach(pl => {
     if (pl.name !== uniquePlayer && pl.name !== lostPlayer) {
-        this.playersCollection.doc(pl.name).update({role : place.generalRole});
+        this.playersCollection.doc(pl.name).update({role : 'general'});
       }
     });
-    this.playersCollection.doc(uniquePlayer).update({role : place.uniqueRole});
+    this.playersCollection.doc(uniquePlayer).update({role : 'unique'});
     this.playersCollection.doc(lostPlayer).update({role : 'lost'});
   }
 

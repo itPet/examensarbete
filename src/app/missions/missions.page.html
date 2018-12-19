@@ -1,109 +1,191 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>missions</ion-title>
+    <ion-title>Uppdrag</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid *ngIf="player.role === chosenPlace.generalRole">
+<!--GENERAL ROLE-->
+<ion-content *ngIf="playerRole === 'general'">
+  <!--Missons-->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        Dina uppdrag
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      3 poäng: Hitta den vilsne innan spelet tar slut!
+      <br>
+      <br>
+      1 poäng: Hitta {{chosenPlace.uniqueRole}} innan spelet tar slut!
+    </ion-card-content>
+  </ion-card>
+  
+  <!--Lost list-->
+  <ion-grid>
     <ion-row>
-
       <ion-col size="6">
-        <ion-card>
-
+        <ion-card class="noMargin">
           <ion-card-header>
-            <h3>Uppdrag: Hitta den vilse innan tiden går ut eller den vilsne ger sig till känna! (ger 3 poäng)</h3>
+            <ion-card-subtitle>
+              Vem är:
+              <br>
+              vilsen?
+            </ion-card-subtitle>
           </ion-card-header>
-
+          
           <ion-card-content>
             <ion-list>
-              <ion-item>
-                <ion-label text-wrap>
-                  <h1>Vet inte ännu</h1>
-                </ion-label>
-              </ion-item>
-              <ion-item *ngFor="let pl of players">
-                <ion-label text-wrap>
+              
+              <ion-button *ngIf="lGuess === null" strong="true" fill="solid" expand="block">
+                <ion-text>Vet inte ännu</ion-text>
+              </ion-button>
+              <ion-button *ngIf="lGuess !== null" fill="outline" expand="block" (click)="lostGuess(null)">
+                <ion-text>Vet inte ännu</ion-text>
+              </ion-button>
+              
+              <div *ngFor="let name of playerNames">
+                <div *ngIf="name !== playerName">
                   <br>
-                  <h1>{{pl.name}}</h1>
-                  <br>
-                </ion-label>
-              </ion-item>
+                  <ion-button *ngIf="lGuess === name" strong="true" fill="solid" expand="block">
+                    <div>{{name}}</div>
+                  </ion-button>
+                  <ion-button *ngIf="lGuess !== name" fill="outline" expand="block" (click)="lostGuess(name)">
+                    <div>{{name}}</div>
+                  </ion-button>
+                </div>
+                
+              </div>
             </ion-list>
           </ion-card-content>
-          
         </ion-card>
       </ion-col>
 
+      <!--Unique list-->
       <ion-col size="6">
-        <ion-card>
-
+        <ion-card class="noMargin">
           <ion-card-header>
-            <h3>Bonuspoäng: Hitta {{chosenPlace.uniqueRole}} innan tiden går ut eller den vilsne ger sig till känna! (ger 1 poäng)</h3>
+            <ion-card-subtitle>
+              Vem är:
+              <br>
+              {{chosenPlace.uniqueRole}}?
+            </ion-card-subtitle>
           </ion-card-header>
-
+          
           <ion-card-content>
             <ion-list>
-              <ion-item>
-                <ion-label text-wrap>
-                  <h1>Vet inte ännu</h1>
-                </ion-label>
-              </ion-item>
-              <ion-item *ngFor="let pl of players">
-                <ion-label text-wrap>
+              
+              <ion-button *ngIf="uGuess === null" strong="true" fill="solid" expand="block">
+                <ion-text>Vet inte ännu</ion-text>
+              </ion-button>
+              <ion-button *ngIf="uGuess !== null" fill="outline" expand="block" (click)="uniqueGuess(null)">
+                <ion-text>Vet inte ännu</ion-text>
+              </ion-button>
+              
+              <div *ngFor="let name of playerNames">
+                <div *ngIf="name !== playerName">
                   <br>
-                  <h1>{{pl.name}}</h1>
-                  <br>
-                </ion-label>
-              </ion-item>
+                  <ion-button *ngIf="uGuess === name" strong="true" fill="solid" expand="block">
+                    <div>{{name}}</div>
+                  </ion-button>
+                  <ion-button *ngIf="uGuess !== name" fill="outline" expand="block" (click)="uniqueGuess(name)">
+                    <div>{{name}}</div>
+                  </ion-button>
+                </div>
+              </div>
             </ion-list>
           </ion-card-content>
-          
         </ion-card>
       </ion-col>
-
     </ion-row>
   </ion-grid>
+</ion-content>
 
-
-  <ion-card padding *ngIf="player.role === chosenPlace.uniqueRole">
+<!--UNIQUE ROLE-->
+<ion-content padding *ngIf="playerRole === 'unique'">
+  <!--Missons-->
+  <ion-card>
     <ion-card-header>
-      Uppdrag: Hitta den vilsne innan tiden går ut och innan den vilsne ger sig till känna! (ger 3 poäng)
-      <br>
-      <br>
-      Bonuspoäng: Om minst en gissar att du är {{player.role}} får du 1 poäng.
+      <ion-card-title>
+        Dina uppdrag
+      </ion-card-title>
     </ion-card-header>
-
     <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-label text-wrap>
-            <h1>Vet inte ännu</h1>
-          </ion-label>
-        </ion-item>
-        <ion-item *ngFor="let pl of players">
-          <ion-label text-wrap>
-            <br>
-            <h1>{{pl.name}}</h1>
-            <br>
-          </ion-label>
-        </ion-item>
-      </ion-list>
+      3 poäng: Hitta den vilsne innan spelet tar slut!
+      <br>
+      <br>
+      1 poäng: Om minst en annan gissar att du är {{chosenPlace.uniqueRole}}!
     </ion-card-content>
   </ion-card>
 
+  <!--Lost list-->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>
+        Vem är vilsen?
+      </ion-card-subtitle>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <ion-list>
+        
+        <ion-button *ngIf="lGuess === null" strong="true" fill="solid" expand="block">
+          <ion-text>Vet inte ännu</ion-text>
+        </ion-button>
+        <ion-button *ngIf="lGuess !== null" fill="outline" expand="block" (click)="lostGuess(null)">
+          <ion-text>Vet inte ännu</ion-text>
+        </ion-button>
+        
+        <div *ngFor="let name of playerNames">
+          <div *ngIf="name !== playerName">
+            <br>
+            <ion-button *ngIf="lGuess === name" strong="true" fill="solid" expand="block">
+              <div>{{name}}</div>
+            </ion-button>
+            <ion-button *ngIf="lGuess !== name" fill="outline" expand="block" (click)="lostGuess(name)">
+              <div>{{name}}</div>
+            </ion-button>
+          </div>
+        </div>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
 
-  <h3 padding *ngIf="player.role === 'lost'">
-    Uppdrag: Hitta platsen där alla är innan tiden går ut och innan du blivit hittat av majoriteten! (ger 3 poäng)
-    <br>
-    <br>
-    Bonuspoäng: Om du inte blir hittad av majoriteten får du 1 poäng.
-    <br>
-    <br>
-    (För att gissa på en plats, gå till "Platser", klicka sedan på en plats och sedan på knappen: "Gissa på den här platsen")
-  </h3>
+<!--LOST ROLE-->
+<ion-content padding *ngIf="playerRole === 'lost'">
+  <!--Missons-->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        Dina uppdrag
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      3 poäng: Hitta platsen där alla är innan spelet tar slut!
+      <br>
+      <br>
+      1 poäng: Om majoriteten inte lyckas hitta dig och om du inte gissar på fel plats.
+    </ion-card-content>
+  </ion-card>
 
-
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>
+        Gör så här för att gissa på en plats:
+      </ion-card-subtitle>
+    </ion-card-header>
+    
+    <ion-card-content>
+      1. Gå till fliken "Platser".
+      <br>
+      <br>
+      2. Klicka på en plats.
+      <br>
+      <br>
+      3. Klicka på knappen "Gissa på den här platsen".
+    </ion-card-content>
+  </ion-card>
 </ion-content>
 
 
